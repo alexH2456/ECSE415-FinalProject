@@ -5,7 +5,6 @@ import PIL.Image as pimg
 
 data_path = os.path.join(os.getcwd(), 'localization/yolo/data')
 train_img_path = os.path.join(data_path, 'train')
-test_image_path = os.path.join(data_path, 'test')
 csv_path = os.path.join(data_path, 'gt_train.csv')
 
 obj_ids = {
@@ -28,9 +27,6 @@ start = time.time()
 for txt in os.listdir(train_img_path):
     if txt.endswith('.txt'):
         os.remove(os.path.join(train_img_path, txt))
-for txt in os.listdir(test_image_path):
-    if txt.endswith('.txt'):
-        os.remove(os.path.join(test_image_path, txt))
 
 # Delete old train.txt and test.txt
 if os.path.isfile(os.path.join(data_path, 'train.txt')):
@@ -39,18 +35,19 @@ if os.path.isfile(os.path.join(data_path, 'test.txt')):
     os.remove(os.path.join(data_path, 'test.txt'))
 
 # Create train text file with image paths
-train_img_names = sorted(os.listdir(train_img_path))
-with open(f'{train_img_path}.txt', 'w') as train:
-    for img in train_img_names:
+img_names = sorted(os.listdir(train_img_path))
+num_images = len(img_names)
+num_train = int(num_images * 0.8)
+
+with open(os.path.join(data_path, 'train.txt'), 'w') as train:
+    for img in img_names[:num_train]:
         if img.endswith('.jpg'):
             train.write(os.path.join('data/train', img) + '\n')
 
-# Create test text file with image paths
-test_img_names = sorted(os.listdir(test_image_path))
-with open(f'{test_image_path}.txt', 'w') as test:
-    for img in test_img_names:
+with open(os.path.join(data_path, 'test.txt'), 'w') as test:
+    for img in img_names[num_train:]:
         if img.endswith('jpg'):
-            test.write(os.path.join('data/test', img) + '\n')
+            test.write(os.path.join('data/train', img) + '\n')
 
 # Create label text files
 with open(csv_path, 'r') as csv:
