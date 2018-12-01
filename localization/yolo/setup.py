@@ -52,4 +52,5 @@ with open(csv_path, 'r') as csv:
 img_names = sorted(os.listdir(img_path))
 with open(f'{img_path}.txt', 'w') as train:
     for img in img_names:
-        train.write(os.path.join(img_path, img) + '\n')
+        if img.endswith('.jpg'):
+            train.write(os.path.join(img_path, img) + '\n')
