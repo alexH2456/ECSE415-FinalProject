@@ -1,7 +1,9 @@
-.ipynb_checkpoints/*
+.ipynb_checkpoints/
+
+MIO-TCD-Localization
 MIO-TCD-Classification
-MIO-TCD-Localization
-MIO-TCD-Classification-Code
+
 MIO-TCD-Localization-Code
-MIO-TCD-Localization
+MIO-TCD-Classification-Code
+
 models
