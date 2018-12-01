@@ -7,3 +7,6 @@ MIO-TCD-Localization-Code
 MIO-TCD-Classification-Code
 
 models
+localization/yolo/darknet
+localization/yolo/data/test
+localization/yolo/data/train
