@@ -19,7 +19,7 @@ Custom-trained version of [YOLOv3](https://pjreddie.com/darknet/yolo/) using [da
 The datasets used were provided by the following paper:
 
 Z. Luo, F.B.Charron, C.Lemaire, J.Konrad, S.Li, A.Mishra, A. Achkar, J. Eichel, P-M Jodoin
-MIO-TCD: A new benchmark dataset for vehicle classification and localization
-in press at IEEE Transactions on Image Processing, 2018
+"MIO-TCD: A new benchmark dataset for vehicle classification and localization
+in press at IEEE Transactions on Image Processing". 2018
 
 Link to dataset: http://podoce.dinf.usherbrooke.ca/challenge/dataset/ 
