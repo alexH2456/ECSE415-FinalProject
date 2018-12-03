@@ -3,8 +3,9 @@ import time
 import shutil
 import PIL.Image as pimg
 
-data_path = os.path.join(os.getcwd(), 'localization/yolo/data')
-train_img_path = os.path.join(data_path, 'train')
+cwd = os.path.dirname(os.path.realpath(__file__))
+data_path = os.path.join(cwd, 'data')
+img_path = os.path.join(data_path, 'train')
 csv_path = os.path.join(data_path, 'gt_train.csv')
 
 obj_ids = {
@@ -24,30 +25,22 @@ obj_ids = {
 start = time.time()
 
 # Delete all existing labels
-for txt in os.listdir(train_img_path):
+for txt in os.listdir(img_path):
     if txt.endswith('.txt'):
-        os.remove(os.path.join(train_img_path, txt))
-
-# Delete old train.txt and test.txt
-if os.path.isfile(os.path.join(data_path, 'train.txt')):
-    os.remove(os.path.join(data_path, 'train.txt'))
-if os.path.isfile(os.path.join(data_path, 'test.txt')):
-    os.remove(os.path.join(data_path, 'test.txt'))
+        os.remove(os.path.join(img_path, txt))
 
 # Create train text file with image paths
-img_names = sorted(os.listdir(train_img_path))
+img_names = sorted(os.listdir(img_path))
 num_images = len(img_names)
 num_train = int(num_images * 0.8)
 
 with open(os.path.join(data_path, 'train.txt'), 'w') as train:
     for img in img_names[:num_train]:
-        if img.endswith('.jpg'):
-            train.write(os.path.join('data/train', img) + '\n')
+        train.write(os.path.join('data/train', img) + '\n')
 
 with open(os.path.join(data_path, 'test.txt'), 'w') as test:
     for img in img_names[num_train:]:
-        if img.endswith('jpg'):
-            test.write(os.path.join('data/train', img) + '\n')
+        test.write(os.path.join('data/train', img) + '\n')
 
 # Create label text files
 with open(csv_path, 'r') as csv:
@@ -58,10 +51,10 @@ with open(csv_path, 'r') as csv:
         name_txt = f'{name}.txt'
         name_jpg = f'{name}.jpg'
 
-        img_path = os.path.join(train_img_path, name_jpg)
-        txt_path = os.path.join(train_img_path, name_txt)
+        jpg_path = os.path.join(img_path, name_jpg)
+        txt_path = os.path.join(img_path, name_txt)
 
-        img_w, img_h = pimg.open(img_path).size
+        img_w, img_h = pimg.open(jpg_path).size
 
         w = (x2 - x1) / img_w
         h = (y2 - y1) / img_h
