@@ -5,5 +5,5 @@ MIO-TCD: A new benchmark dataset for vehicle classification and localization</br
 in press at IEEE Transactions on Image Processing, 2018</br>
 
 ## File Structure
-You'll find the SVM and CNN classifier jupyter notebooks under ./classification
+You'll find the SVM and CNN classifier jupyter notebooks under ./classification<br>
 Similarly, the localizer jupyter notebook is under ./localization
