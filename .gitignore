@@ -6,6 +6,8 @@ MIO-TCD-Classification
 MIO-TCD-Localization-Code
 MIO-TCD-Classification-Code
 
+classification/models
+
 localization/yolo/darknet
 localization/yolo/weights
 localization/yolo/data/pred
