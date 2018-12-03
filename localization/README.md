@@ -14,4 +14,4 @@ Requires Nvidia drivers, CUDA, cuDNN for training. Use [Anaconda](https://www.an
 - Weights will be stored under `darknet/backup` every 100 iterations.
 
 ## Evaluation
-Import model using OpenCV or use `localizer.py`. Use `yolo-localization-test.cfg` as config file. Pre-trained weights can be found under `yolo/weights`.
+Import model using OpenCV or use `localizer.py`. Use `yolo-localization-test.cfg` as config file. Put pre-trained weights under `yolo/weights`.
