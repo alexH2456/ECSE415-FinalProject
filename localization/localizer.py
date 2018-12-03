@@ -1,4 +1,5 @@
 import os
+import sys
 import cv2
 import random
 import numpy as np
@@ -13,16 +14,16 @@ cv2.setNumThreads(4)
 #              VARIABLE DEFINITIONS              #
 ##################################################
 
-cwd = os.path.dirname(os.path.realpath(__file__))
-out_path = os.path.join(cwd, 'yolo/data/test')
+cwd = os.path.dirname(sys.argv[0])
+out_path = os.path.join(cwd, 'yolo/data/pred')
 img_path = os.path.join(cwd, 'yolo/data/train')
 test_file = os.path.join(cwd, 'yolo/data/test.txt')
 classes_file = os.path.join(cwd, 'yolo/data/localization.names')
 model_config = os.path.join(cwd, 'yolo/yolo-localization-train.cfg')
-model_weights = os.path.join(cwd, 'yolo/weights/yolo-localization_15200.weights')
+model_weights = os.path.join(cwd, 'yolo/weights/yolo-localization_20000.weights')
 
-test_size = (832,832)
-conf_threshold = 0.5
+test_size = (416, 416)
+conf_threshold = 0.6
 nms_threshold = 0.4
 
 
@@ -46,9 +47,9 @@ def drawPrediction(frame, class_id, conf, left, top, right, bot):
         label = f'{classes[class_id]}:{label}'
 
     # Display the label at the top of the bounding box
-    label_size, _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+    label_size, _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_COMPLEX, 0.5, 1)
     top = max(top, label_size[1])
-    cv2.putText(frame, label, (left, top), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255))
+    cv2.putText(frame, label, (left, top), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255,255,255))
 
 # Remove the bounding boxes with low confidence using non-maxima suppression
 def postprocess(frame, outs):
@@ -76,13 +77,18 @@ def postprocess(frame, outs):
                 boxes.append([left, top, width, height])
 
     # Perform non-maxima suppression to eliminate redundant overlapping boxes with lower confidences
+    preds = 0
+    confs = []
     indices = cv2.dnn.NMSBoxes(boxes, confidences, conf_threshold, nms_threshold)
     for ind in indices:
         i = ind[0]
         box = boxes[i]
         left, top, width, height = box
+        preds += 1
+        confs.append(confidences[i])
         drawPrediction(test_img, class_ids[i], confidences[i], left, top, left + width, top + height)
 
+    return preds, np.mean(confs)
 
 ##################################################
 #                BEGIN EVALUATION                #
@@ -98,7 +104,7 @@ test_images = {}
 with open(test_file, 'r') as tf:
     img_paths = tf.read().splitlines()
     for _ in range(num_images):
-        img = os.path.join('yolo', random.choice(img_paths).strip())
+        img = os.path.join('yolo', random.choice(img_paths))
         test_images[img.split('/')[-1]] = cv2.imread(img)
 
 # Create list of all classes
@@ -122,15 +128,12 @@ for name, test_img in test_images.items():
     outs = net.forward(getOutputsNames(net))
 
     # Remove the bounding boxes with low confidence
-    postprocess(test_img, outs)
+    preds, avg_conf = postprocess(test_img, outs)
 
-    # Add efficiency information to box
-    # getPerfProfile returns the overall time for inference(t) and the timings for each of the layers
-    t, _ = net.getPerfProfile()
-    time = t * 1000 / cv2.getTickFrequency()
-    label = f'Inference time: {t:.2f} ms'
-    cv2.putText(test_img, label, (0, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255))
-
-    # Create image with the detection boxes
+    # Create image file with the detection boxes
     output_img = os.path.join(out_path, name)
     cv2.imwrite(output_img, test_img.astype(np.uint8))
+
+    print(f'Image: {name}')
+    print(f'Number of predictions: {preds}')
+    print(f'Average prediction confidence: {avg_conf}\n')
