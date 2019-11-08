@@ -4,7 +4,7 @@ import time
 import shutil
 import PIL.Image as pimg
 
-cwd = os.path.dirname(sys.argv(0))
+cwd = os.path.dirname(sys.argv[0])
 data_path = os.path.join(cwd, 'data')
 img_path = os.path.join(data_path, 'train')
 csv_path = os.path.join(data_path, 'gt_train.csv')
